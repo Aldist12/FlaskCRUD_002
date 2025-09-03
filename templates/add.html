@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Buku Baru - Manajemen Buku</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1 class="form-title">
+                <i class="fas fa-plus"></i> Tambah Buku Baru
+            </h1>
+
+            <form method="POST" class="book-form">
+                <div class="form-group">
+                    <label for="judul"><i class="fas fa-heading"></i> Judul Buku *</label>
+                    <input type="text" id="judul" name="judul" required placeholder="Masukkan judul buku">
+                </div>
+
+                <div class="form-group">
+                    <label for="penulis"><i class="fas fa-user-pen"></i> Penulis *</label>
+                    <input type="text" id="penulis" name="penulis" required placeholder="Masukkan nama penulis">
+                </div>
+
+                <div class="form-group">
+                    <label for="tahun"><i class="fas fa-calendar"></i> Tahun Terbit</label>
+                    <input type="number" id="tahun" name="tahun" min="1000" max="2024" placeholder="Tahun terbit">
+                </div>
+
+                <div class="form-group">
+                    <label for="genre"><i class="fas fa-tag"></i> Genre</label>
+                    <select id="genre" name="genre">
+                        <option value="">Pilih Genre</option>
+                        <option value="Fiksi">Fiksi</option>
+                        <option value="Non-Fiksi">Non-Fiksi</option>
+                        <option value="Sains">Sains</option>
+                        <option value="Sejarah">Sejarah</option>
+                        <option value="Teknologi">Teknologi</option>
+                        <option value="Bisnis">Bisnis</option>
+                        <option value="Novel">Novel</option>
+                        <option value="Pendidikan">Pendidikan</option>
+                        <option value="Romantis">Romantis</option>
+                        <option value="Anime">Anime</option>
+                        <option value="Fantasi">Fantasi</option>
+                        <option value="Misteri">Misteri</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Simpan Buku
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
+                    Swal.fire({
+                        icon: '{{ category }}',
+                        title: '{{ message }}',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

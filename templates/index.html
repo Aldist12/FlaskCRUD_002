@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Buku</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title"><i class="fas fa-book"></i> Manajemen Buku</h1>
+            <p class="subtitle">Kelola koleksi buku Anda dengan mudah</p>
+        </header>
+
+        <div class="actions">
+            <a href="{{ url_for('add') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Tambah Buku Baru
+            </a>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>{{ books|length }}</h3>
+                <p>Total Buku</p>
+            </div>
+        </div>
+
+        <div class="book-list">
+            {% if books %}
+                {% for book in books %}
+                <div class="book-card">
+                    <div class="book-cover">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">{{ book.judul }}</h3>
+                        <p class="book-author"><i class="fas fa-user-pen"></i> {{ book.penulis }}</p>
+                        {% if book.tahun %}
+                        <p class="book-year"><i class="fas fa-calendar"></i> {{ book.tahun }}</p>
+                        {% endif %}
+                        {% if book.genre %}
+                        <p class="book-genre"><i class="fas fa-tag"></i> {{ book.genre }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="book-actions">
+                        <a href="{{ url_for('edit', id=book.id) }}" class="btn btn-edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <button class="btn btn-delete" onclick="confirmDelete({{ book.id }}, '{{ book.judul|replace("'", "\\'") }}')">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-book-open-reader"></i>
+                    <h3>Belum ada buku</h3>
+                    <p>Mulai dengan menambahkan buku pertama Anda</p>
+                    <a href="{{ url_for('add') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Tambah Buku
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
+                    Swal.fire({
+                        icon: '{{ category }}',
+                        title: '{{ message }}',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <script>
+        function confirmDelete(id, title) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Buku "' + title + '" akan dihapus permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/delete/' + id, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                'Terhapus!',
+                                'Buku berhasil dihapus.',
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Gagal menghapus buku.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan saat menghapus.',
+                            'error'
+                        );
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Buku - Manajemen Buku</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1 class="form-title">
+                <i class="fas fa-edit"></i> Edit Buku
+            </h1>
+
+            <form method="POST" class="book-form">
+                <div class="form-group">
+                    <label for="judul"><i class="fas fa-heading"></i> Judul Buku *</label>
+                    <input type="text" id="judul" name="judul" value="{{ book.judul }}" required placeholder="Masukkan judul buku">
+                </div>
+
+                <div class="form-group">
+                    <label for="penulis"><i class="fas fa-user-pen"></i> Penulis *</label>
+                    <input type="text" id="penulis" name="penulis" value="{{ book.penulis }}" required placeholder="Masukkan nama penulis">
+                </div>
+
+                <div class="form-group">
+                    <label for="tahun"><i class="fas fa-calendar"></i> Tahun Terbit</label>
+                    <input type="number" id="tahun" name="tahun" value="{{ book.tahun or '' }}" min="1000" max="2024" placeholder="Tahun terbit">
+                </div>
+
+                <div class="form-group">
+                    <label for="genre"><i class="fas fa-tag"></i> Genre</label>
+                    <select id="genre" name="genre">
+                        <option value="">Pilih Genre</option>
+                        <option value="Fiksi" {% if book.genre == 'Fiksi' %}selected{% endif %}>Fiksi</option>
+                        <option value="Non-Fiksi" {% if book.genre == 'Non-Fiksi' %}selected{% endif %}>Non-Fiksi</option>
+                        <option value="Sains" {% if book.genre == 'Sains' %}selected{% endif %}>Sains</option>
+                        <option value="Sejarah" {% if book.genre == 'Sejarah' %}selected{% endif %}>Sejarah</option>
+                        <option value="Teknologi" {% if book.genre == 'Teknologi' %}selected{% endif %}>Teknologi</option>
+                        <option value="Bisnis" {% if book.genre == 'Bisnis' %}selected{% endif %}>Bisnis</option>
+                        <option value="Novel" {% if book.genre == 'Novel' %}selected{% endif %}>Novel</option>
+                        <option value="Pendidikan" {% if book.genre == 'Pendidikan' %}selected{% endif %}>Pendidikan</option>
+                        <option value="Romantis" {% if book.genre == 'Romantis' %}selected{% endif %}>Romantis</option>
+                        <option value="Anime" {% if book.genre == 'Anime' %}selected{% endif %}>Anime</option>
+                        <option value="Fantasi" {% if book.genre == 'Fantasi' %}selected{% endif %}>Fantasi</option>
+                        <option value="Misteri" {% if book.genre == 'Misteri' %}selected{% endif %}>Misteri</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Buku
+                    </button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Batal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
+                    Swal.fire({
+                        icon: '{{ category }}',
+                        title: '{{ message }}',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
